@@ -1,9 +1,15 @@
 <?php
 
-use App\Core\Router;
+require __DIR__ . '/vendor/autoload.php';
 
-require('vendor/autoload.php');
+use App\Core\Router;
 
 $router = new Router();
 
-$router->run();
+$router->addRoute('', 'App\Controllers\Main');
+$router->addRoute('about', 'App\Controllers\About');
+$router->addRoute('gallery', 'App\Controllers\Gallery');
+
+$method = $_SERVER['REQUEST_METHOD'];
+
+$router->resolve($_SERVER['REQUEST_URI'], $method);

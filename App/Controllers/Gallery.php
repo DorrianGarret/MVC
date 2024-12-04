@@ -6,16 +6,16 @@ class Gallery
 {
     public function index(): void
     {
-        echo 'This is the gallery page';
+        echo "Welcome to the Gallery";
     }
 
     public function create(): void
     {
-        echo 'Gallery page create method executed';
+        echo "create method called in gallery controller.";
     }
 
     public function delete(): void
     {
-        echo 'Gallery page delete method executed';
+        echo "delete method called in gallery controller.";
     }
 }

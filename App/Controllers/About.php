@@ -6,16 +6,16 @@ class About
 {
     public function index(): void
     {
-        echo 'This is the about page';
+        echo "Welcome to the About";
     }
 
     public function create(): void
     {
-        echo 'About page create method executed';
+        echo "create method called in about controller.";
     }
 
     public function delete(): void
     {
-        echo 'About page delete method executed';
+        echo "delete method called in about controller.";
     }
 }

@@ -6,16 +6,16 @@ class Main
 {
     public function index(): void
     {
-        echo 'This is the main page';
+        echo "Welcome to Main page";
     }
 
     public function create(): void
     {
-        echo 'Main page create method executed';
+        echo "create method called in main controller.";
     }
 
     public function delete(): void
     {
-        echo 'Main page delete method executed';
+        echo "delete method called in main controller.";
     }
 }

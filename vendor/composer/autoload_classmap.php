@@ -6,6 +6,10 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Controllers\\About' => $baseDir . '/App/Controllers/About.php',
+    'App\\Controllers\\Gallery' => $baseDir . '/App/Controllers/Gallery.php',
+    'App\\Controllers\\Main' => $baseDir . '/App/Controllers/Main.php',
+    'App\\Controllers\\NotFound' => $baseDir . '/App/Controllers/NotFound.php',
     'App\\Core\\Router' => $baseDir . '/App/Core/Router.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
 );

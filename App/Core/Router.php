@@ -4,66 +4,50 @@ namespace App\Core;
 
 class Router
 {
-    const  CONTROLLER_NAMESPACE = 'App\\Controllers\\';
-    const  MAIN = 'Main';
+    private array $routes = [];
 
-
-    public function run(): void
+    public function addRoute(string $method, string $controller): void
     {
-        $namespace = $this->getNamespace();
+        $this->routes[$method] = $controller;
+    }
 
-        // Проверяем, существует ли класс контроллера
-        if (!class_exists($namespace)) {
-            $namespace = self::CONTROLLER_NAMESPACE . 'Error';
+    public function resolve(string $uri, string $method = 'GET'): void
+    {
+        $uri = trim($uri, '/');
+
+        if (isset($this->routes[$uri])) {
+            $controllerClass = $this->routes[$uri];
+            if (class_exists($controllerClass)) {
+                $controller = new $controllerClass();
+
+                if ($method === 'POST' && method_exists($controller, 'create')) {
+                    $controller->create();
+                    return;
+                }
+
+                if ($method === 'DELETE' && method_exists($controller, 'delete')) {
+                    $controller->delete();
+                    return;
+                }
+
+                if (method_exists($controller, 'index')) {
+                    $controller->index();
+                    return;
+                }
+            }
         }
 
-        $controller = new $namespace();
+        $this->handleNotFound();
+    }
 
-        // Определяем метод (index, create, delete)
-        $method = $this->resolveMethod();
-
-        // Проверяем, существует ли метод в классе контроллера
-        if (method_exists($controller, $method)) {
-            $controller->$method(); // Вызываем метод
+    private function handleNotFound(): void
+    {
+        $controllerClass = 'App\\NotFound';
+        if (class_exists($controllerClass)) {
+            $controller = new $controllerClass();
+            $controller->index();
         } else {
-            echo "Method '$method' not found in controller '" . get_class($controller) . "'<br>";
+            echo "404 - Not Found";
         }
-    }
-
-    private function getNamespace(): string
-    {
-        $controllerName = $this->prepareControllerName();
-
-        // Определяем полное пространство имен
-        $namespace = is_string($controllerName) ? $controllerName : $controllerName[1];
-        return self::CONTROLLER_NAMESPACE . ucfirst($namespace);
-    }
-
-    private function prepareControllerName(): array|string
-    {
-        $result = self::MAIN;
-        $request = $_SERVER['REQUEST_URI'];
-
-        if (isset($request)) {
-            $result = explode('/', trim($request, '/')); // Убираем начальный/конечный "/"
-        }
-
-        if (is_array($result) && empty($result[0])) {
-            $result = self::MAIN;
-        }
-
-        return $result;
-    }
-
-    private function resolveMethod(): string
-    {
-        $requestMethod = $_SERVER['REQUEST_METHOD']; // Определяем HTTP-метод
-        $methodMapping = [
-            'GET' => 'index',
-            'POST' => 'create',
-            'DELETE' => 'delete',
-        ];
-
-        return $methodMapping[$requestMethod] ?? 'index'; // Возвращаем соответствующий метод
     }
 }
