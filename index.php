@@ -4,11 +4,9 @@ require __DIR__ . '/vendor/autoload.php';
 
 use App\Core\Router;
 
-$router = new Router();
+$routes = require __DIR__ . '/config/routes.php';
 
-$router->addRoute('', 'App\Controllers\Main');
-$router->addRoute('about', 'App\Controllers\About');
-$router->addRoute('gallery', 'App\Controllers\Gallery');
+$router = new Router($routes);
 
 $method = $_SERVER['REQUEST_METHOD'];
 
