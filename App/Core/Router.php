@@ -6,9 +6,9 @@ class Router
 {
     private array $routes = [];
 
-    public function addRoute(string $method, string $controller): void
+    public function __construct(array $config)
     {
-        $this->routes[$method] = $controller;
+        $this->routes = $config;
     }
 
     public function resolve(string $uri, string $method = 'GET'): void
@@ -16,7 +16,15 @@ class Router
         $uri = trim($uri, '/');
 
         if (isset($this->routes[$uri])) {
-            $controllerClass = $this->routes[$uri];
+            $route = $this->routes[$uri];
+
+            if (!in_array($method, $route['methods'])) {
+                $this->handleMethodNotAllowed();
+                return;
+            }
+
+            $controllerClass = $route['controller'];
+
             if (class_exists($controllerClass)) {
                 $controller = new $controllerClass();
 
@@ -47,7 +55,13 @@ class Router
             $controller = new $controllerClass();
             $controller->index();
         } else {
-            echo "404 - Not Found";
+            echo "404 - not found";
         }
+    }
+
+    private function handleMethodNotAllowed(): void
+    {
+        http_response_code(405);
+        echo "405 - method not allowed";
     }
 }
